@@ -10,11 +10,11 @@ import time
 from selenium.webdriver.common.action_chains import ActionChains
 import random
 
-#This project is for fun and learning purposes only and is not to be abused to bot votes. please vote according to the rules
+#This project is for fun and learning purposes only and is not to be abused. please vote according to the rules
 #You can vote for as many characters as you like per day according to the sanrio website
-
 #Vote for your favourite characters from your python terminal! You don't have to do it yourself :)
 
+#_________________________________________________________________________________________________
 #Override variables, edit these to skip the text entry
 ageValue = "20-29 years old"
 sexValue = "Other"
@@ -215,8 +215,8 @@ else:
     adaptiveVote(character)
     enterInitialDetails(ageValue,sexValue,expValue,regionValue)
     verifyVote(character)
-    x=0
-    while x==0:
+    
+    while True:
         newChar = input("Do you want to vote for another character?(y/n)")
         if (newChar =='y' or newChar == 'Y'):
                 character = userChooseFromList(characters,"Which Character are you voting for?")
@@ -224,6 +224,6 @@ else:
                 verifyVote(character)
         else:
             print("Thanks for voting!")
-            x+1       
+            break     
                 
 driver.close()
