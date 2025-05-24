@@ -10,7 +10,7 @@ import time
 from selenium.webdriver.common.action_chains import ActionChains
 import random
 
-#This project is for fun and learning purposes only and is not to be abused. please vote according to the rules
+#This project is for fun and learning purposes only and is not to be abused. Please vote according to the rules
 #You can vote for as many characters as you like per day according to the sanrio website
 #Vote for your favourite characters from your python terminal! You don't have to do it yourself :)
 
@@ -22,12 +22,15 @@ expValue = "I've voted in the Character Ranking before."
 regionValue = "United Kingdom"
 characterList = ['HANAMARUOBAKE','U・SA・HA・NA','LLOROMANNIC','Pompompurin','Aggretsuko', 'SHOW BY ROCK!!', 'KUROMI']
 
+overrideControls = input("Do you want to use the override variables?(y/n)")
+
 driver = webdriver.Firefox()
+driver.maximize_window()
 
 def enterInitialDetails(age,sex,exp,region):
     if (elementOnScreen("//select[@id='age']")):
         selectAge = Select(driver.find_element(By.XPATH,"//select[@id='age']"))
-        time.sleep(3)
+        time.sleep(1)
         selectAge.select_by_visible_text(str(age))
         selectSex = Select(driver.find_element(By.XPATH,"//select[@id='gender']"))
         driver.implicitly_wait(2)
@@ -75,7 +78,8 @@ def adaptiveVote(charName):
     y,x = location['y'],location['x']
     y=y-100
     driver.execute_script(f"window.scrollTo(0, {y})")
-    time.sleep(3)
+    time.sleep(1)
+   # waitForClickable(charElem)
     charElem.click()
    
 
@@ -92,14 +96,14 @@ def waitForElement(elementBy):
         element_present = EC.presence_of_element_located(elementBy)
         WebDriverWait(driver, 5).until(element_present)
     except TimeoutException:
-        print ("Timed out waiting for element to load")
+        print ("Element didn't load in 5 seconds")
 
 def waitForClickable(elementBy):
     try:
         element_present = EC.element_to_be_clickable(elementBy)
         WebDriverWait(driver, 5).until(element_present)
     except TimeoutException:
-        print ("Timed out waiting for element to load")
+        print ("Element didn't become clickable in 5 seconds")
   
 def userChooseFromList(validValuesList, question):
     while True:
@@ -141,13 +145,11 @@ def getAllOptionsFromSelect(selectLocatorStr):
        selectElem = driver.find_element(By.XPATH,selectLocatorStr)
        selectObj = Select(selectElem)
        optionsList = selectObj.options
-       print(optionsList[1].text)
        textOnlyList = []
        extractedText = ''
        for i in range (len(optionsList)):
            extractedText = optionsList[i].text
            textOnlyList.append(extractedText)
-       print(textOnlyList)    
        return textOnlyList
 
 #get all values in those attributes
@@ -159,25 +161,24 @@ def getAllAttrbutesInLocator(genericXpathStr, reqAttribute):
           locatorAtNumber= (f"({genericXpathStr})[{x}]")
           value = driver.find_element(By.XPATH,locatorAtNumber).get_attribute(reqAttribute)
           valuesList.append(value)
-        print(valuesList)
         return valuesList
     else:
         print("couldn't find element "+genericXpathStr)        
 
-def jaccardSimilarity(s1,s2):
-    set1 = set(s1)
-    set2 = set(s2)
-# Calculating Jaccard similarity
-    res = len(set1 & set2) / len(set1 | set2)
-    return res
+def jaccardSimilarity(string1,string2):
+    set1 = set(string1)
+    set2 = set(string2)
+    result = len(set1 & set2) / len(set1 | set2)
+    return result
 
 #_________________________________________________________________________________________________
 #Open Sanrio Ranking website    
 
 driver.get("https://ranking.sanrio.co.jp/en/characters/")
 
-overrideControls = input("Do you want to use the override variables?(y/n)")
+
 if(overrideControls =='y' or overrideControls =='Y'):
+
     adaptiveVote(characterList[0])
     enterInitialDetails(ageValue,sexValue,expValue,regionValue)
     verifyVote(characterList[0])
@@ -187,7 +188,6 @@ if(overrideControls =='y' or overrideControls =='Y'):
     print ("Thanks for voting!")
 
 else:
-
     firstVoteButton = "(//strong[text()='Vote'])[1]"
     waitForElement((By.XPATH,firstVoteButton))
 
@@ -215,7 +215,7 @@ else:
     adaptiveVote(character)
     enterInitialDetails(ageValue,sexValue,expValue,regionValue)
     verifyVote(character)
-    
+
     while True:
         newChar = input("Do you want to vote for another character?(y/n)")
         if (newChar =='y' or newChar == 'Y'):
