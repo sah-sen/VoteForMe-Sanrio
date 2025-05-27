@@ -55,9 +55,9 @@ def verifyVote(charName):
     assert elementOnScreen(tYForVoteStr) is True
     assert elementOnScreen(charImgStr) is True
     if(elementOnScreen(tYForVoteStr)):
-         print("voted for "+charName)
+         print("Voted for "+charName)
     else:
-        print("vote failed for "+ charName+", you may have already voted for this character today.") 
+        print("Vote failed for "+ charName+", you may have already voted for this character today.") 
     return (elementOnScreen(charImgStr) and elementOnScreen(tYForVoteStr))
 
 def adaptiveVote(charName):
@@ -79,7 +79,6 @@ def adaptiveVote(charName):
     y=y-100
     driver.execute_script(f"window.scrollTo(0, {y})")
     time.sleep(1)
-   # waitForClickable(charElem)
     charElem.click()
    
 
@@ -214,9 +213,9 @@ else:
 
         driver.find_element(By.XPATH,"//button[@class='modal-close']").click()
 
-        regionValue = userChooseFromList(regions,"Which Country are you from?")
+        regionValue = userChooseFromList(regions,"Which Country are you from? ")
 
-        character = userChooseFromList(characters,"Which Character are you voting for?")
+        character = userChooseFromList(characters,"Which Character are you voting for? ")
 
         adaptiveVote(character)
         enterInitialDetails(ageValue,sexValue,expValue,regionValue)
@@ -225,7 +224,7 @@ else:
         while True:
             newChar = input("Do you want to vote for another character?(y/n)")
             if (newChar =='y' or newChar == 'Y'):
-                    character = userChooseFromList(characters,"Which Character are you voting for?")
+                    character = userChooseFromList(characters,"Which Character are you voting for? ")
                     adaptiveVote(character)
                     verifyVote(character)
             else:
