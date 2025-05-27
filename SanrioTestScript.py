@@ -175,55 +175,61 @@ def jaccardSimilarity(string1,string2):
 #Open Sanrio Ranking website    
 
 driver.get("https://ranking.sanrio.co.jp/en/characters/")
+waitForElement((By.XPATH,"//header//img[contains(@alt,'Sanrio Character Ranking')]"))
 
-
-if(overrideControls =='y' or overrideControls =='Y'):
-
-    adaptiveVote(characterList[0])
-    enterInitialDetails(ageValue,sexValue,expValue,regionValue)
-    verifyVote(characterList[0])
-    for i in range(1,len(characterList)):
-        adaptiveVote(characterList[i])
-        verifyVote(characterList[i])
-    print ("Thanks for voting!")
+#handle closed votes
+if(elementOnScreen(("//p[contains(text(),'closed!')]"))):
+    str = driver.find_element(By.XPATH,"//p[contains(text(),'closed!')]").text
+    print(str)
 
 else:
-    firstVoteButton = "(//strong[text()='Vote'])[1]"
-    waitForElement((By.XPATH,firstVoteButton))
+    if(overrideControls =='y' or overrideControls =='Y'):
 
-    genericCharStrLocator = "//img[contains(@src,'characters')]"
+        adaptiveVote(characterList[0])
+        enterInitialDetails(ageValue,sexValue,expValue,regionValue)
+        verifyVote(characterList[0])
+        for i in range(1,len(characterList)):
+            adaptiveVote(characterList[i])
+            verifyVote(characterList[i])
+        print ("Thanks for voting!")
 
-    #Get list of all character names
-    characters = getAllAttrbutesInLocator(genericCharStrLocator,"alt")
-    voteButtonOne = driver.find_element(By.XPATH,firstVoteButton).click()
-    waitForElement((By.ID, "age"))
-    ages = getAllOptionsFromSelect("//select[@id='age']")
-    genders =getAllOptionsFromSelect("//select[@id='gender']")
-    experiences = getAllOptionsFromSelect("//select[@id='experience']")
-    regions = getAllOptionsFromSelect("//select[@id='prefecture']")
+    else:
+        firstVoteButton = "(//strong[text()='Vote'])[1]"
+        waitForElement((By.XPATH,firstVoteButton))
 
-    ageValue = selectRandomOptionFromList(ages)
-    sexValue = selectRandomOptionFromList(genders)
-    expValue = selectRandomOptionFromList(experiences)
+        genericCharStrLocator = "//img[contains(@src,'characters')]"
 
-    driver.find_element(By.XPATH,"//button[@class='modal-close']").click()
+        #Get list of all character names
+        characters = getAllAttrbutesInLocator(genericCharStrLocator,"alt")
+        voteButtonOne = driver.find_element(By.XPATH,firstVoteButton).click()
+        waitForElement((By.ID, "age"))
+        ages = getAllOptionsFromSelect("//select[@id='age']")
+        genders =getAllOptionsFromSelect("//select[@id='gender']")
+        experiences = getAllOptionsFromSelect("//select[@id='experience']")
+        regions = getAllOptionsFromSelect("//select[@id='prefecture']")
 
-    regionValue = userChooseFromList(regions,"Which Country are you from?")
+        ageValue = selectRandomOptionFromList(ages)
+        sexValue = selectRandomOptionFromList(genders)
+        expValue = selectRandomOptionFromList(experiences)
 
-    character = userChooseFromList(characters,"Which Character are you voting for?")
+        driver.find_element(By.XPATH,"//button[@class='modal-close']").click()
 
-    adaptiveVote(character)
-    enterInitialDetails(ageValue,sexValue,expValue,regionValue)
-    verifyVote(character)
+        regionValue = userChooseFromList(regions,"Which Country are you from?")
 
-    while True:
-        newChar = input("Do you want to vote for another character?(y/n)")
-        if (newChar =='y' or newChar == 'Y'):
-                character = userChooseFromList(characters,"Which Character are you voting for?")
-                adaptiveVote(character)
-                verifyVote(character)
-        else:
-            print("Thanks for voting!")
-            break     
-                
+        character = userChooseFromList(characters,"Which Character are you voting for?")
+
+        adaptiveVote(character)
+        enterInitialDetails(ageValue,sexValue,expValue,regionValue)
+        verifyVote(character)
+
+        while True:
+            newChar = input("Do you want to vote for another character?(y/n)")
+            if (newChar =='y' or newChar == 'Y'):
+                    character = userChooseFromList(characters,"Which Character are you voting for?")
+                    adaptiveVote(character)
+                    verifyVote(character)
+            else:
+                print("Thanks for voting!")
+                break     
+                    
 driver.close()
